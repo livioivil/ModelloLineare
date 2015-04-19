@@ -1,0 +1,638 @@
+---
+title: 26° CORSO DI METODOLOGIA STATISTICA PER LA RICERCA BIOLOGICA DI BASE ED APPLICATA
+author: "Livio Finos (credits also to: Gianmarco Altoè)"
+date: "Gargnano, 21-Aprile-2015"
+output:
+  slidy_presentation:
+  job         : Università di Padova
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js,  prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+license     : by-nc-sa
+---
+## Per iniziare
+
+```{r}
+#pulizia
+rm(list=ls())
+#e impostiamo la dir di lavoro
+setwd("/home/livio/Dropbox/didattica/IBSgargnano15/slides/")
+
+#personalizziamo un po' l'output dei nostri grafici
+par.old=par()
+par(cex.main=1.5,lwd=2,col="darkgrey",pch=20,cex=2)
+palette(c("#FF0000","#00A08A","#ffcc00","#445577","#45abff"))
+
+#personalizziamo l'output di knitr
+knitr::opts_chunk$set(fig.align="center")
+# fig.width=5,fig.height=5)
+```
+
+## I dati: temperatura vs materia organica
+blabla
+
+## lettura dei dati
+
+```{r}
+load("./dati/MateriaOrganica.Rdata")
+str(dati)
+```
+
+## Visualizzazione
+
+```{r}
+plot(dati $Temperatura,dati $Materia.organica,pch=20,col=2)
+```
+
+
+## Covarianza e Varianza
+**Covarianza** tra $X$ e $Y$: $\sigma_{xy} = \frac{\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})}{n}$
+
+- varia tra $-\infty$ e $\infty$
+- $\sigma_{xy}\approx 0$: non c'è dipendenza tra $X$ e $Y$
+- $\sigma_{xy} >> (<<) 0$: c'è una forte dipendenza positiva (negativa) tra $X$ e $Y$
+
+**Varianza** di $X$ (=covarianza tra $X$ e $X$): $\sigma_{xx} = \sigma_{x}^2 
+= \frac{\sum_{i=1}^n (x_i-\bar{x})^2}{n}$
+
+**Deviazione Standard** di $X$: $\sigma_{xx} = \sqrt{\sigma_{xx}}=\sigma_{x}$
+
+**Varianza campionaria**di $X$: $\sigma_{xx}^o = \frac{\sum_{i=1}^n (x_i-\bar{x})^2}{\redUnipd{n-1}}$
+
+
+(similmente per la covarianza e la deviazione standard)
+
+ 
+## Correlazione
+Con la Covarianza è difficile stabilire quando la relazione tra $X$ e $Y$ è forte/debole. 
+Notiamo che (in realtà)
+
+$-\sigma_{x}\sigma_{y}\leq \sigma_{xy}\leq \sigma_{x}\sigma_{y}$
+divido i tre membri della disuguaglianza per$\sigma_x\sigma_y$:
+
+$-1\leq \frac{\sigma_{xy}}{\sigma_{x}\sigma_{y}}\leq 1$
+
+
+**Correlazione** tra $X$ e $Y$: $\rho_{xy} = \frac{\sigma{xy}}{\sigma_{x}\sigma_{y}}=
+\frac{\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^n (x_i-\bar{x})^2}\sqrt{\sum_{i=1}^n (y_i-\bar{y})^2}}$
+
+- varia tra $-1$ e $1$
+-$\rho_{xy} \approx 0$: non c'è dipendenza tra $X$ e $Y$
+-$\rho_{xy} \approx 1(-1)$: c'è una forte dipendenza positiva (negativa) tra $X$ e $Y$
+
+
+
+## Temperatura vs Materia Organica Totale
+
+```{r}
+plot(dati $Temperatura-mean(dati $Temperatura),
+     dati $Materia.Organica-mean(dati $Materia.Organica),pch=20,col=2)
+title("Scarti dalla media")
+abline(v=0)
+abline(h=0)
+text(.4,2,"+",col="black",cex=3)
+text(-.4,-2,"+",col="black",cex=3)
+text(-.4,2,"-",col="black",cex=3)
+text(.4,-2,"-",col="black",cex=3)
+```
+
+
+## Linea di Tendenza, metodo dei Minimi Quadrati
+Descriviamo la relazione tra
+$Y=Materia.Organica$ e  
+$X=Temperatura$ con una retta.
+
+. $MateriaOrganica = \beta_0 + \beta_1 Temperatura$
+. $Y=\beta_0+\beta_1X$
+
+Facciamo passare una retta 'in mezzo' ai dati. 
+
+## Stimatori ai Minimi Quadrati
+
+Cerchiamo quella che passa più 'in mezzo', quella che minimizza la somma dei quadrati dei residui:
+
+$\hat{\beta}_0$ e $\hat{\beta}_1$ tali che $\sum_{i=1}^n(y_i-(\hat{\beta}_0+ \hat{\beta}_1x_i ))^2$ sia minimo 
+
+(il più piccolo in assoluto).
+
+
+ 
+## Coefficienti $\hat{\beta}$ e $\hat{y}$ stimati 
+- Coefficiente angolare: $\hat{\beta}_1=\frac{\sigma{xy}}{\sigma_{xx}}=\frac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2}=−2.976$
+- Intercetta: $\hat{\beta}_0= \bar{y} -\hat{\beta}_1\bar{x}=64.539$
+- Risposta ($y$ stimata): $\hat{y}_i = \hat{\beta}_0+ \hat{\beta}_1x_i$
+- Residui (dalla stima ai minimi quadrati):  
+$y_i-(\hat{\beta}_0+ \hat{\beta}_1 x_i) = y_i-\hat{y}_i$
+
+e quindi i minimi quadrati sono la somma dei residui al quadrato:  
+->$\sum_{i=1}^n(y_i-\hat{\beta}_0+ \hat{\beta}_1x_i )^2=\sum_{i=1}^n(y_i-\hat{y}_i)^2$<-
+
+ 
+## Stima e rappresentazione grafica
+
+```{r}
+mod=lm(Materia.Organica~Temperatura,data=dati)
+coefficients(mod)
+plot(dati,pch=20,col=3)
+coeff=round(coefficients(mod),1)
+title(paste("Y=",coeff[1],"+",coeff[2],"*X"))
+abline(mod,col=2)
+```
+
+
+## Interpretazione dei coefficienti
+
+- $\beta_0$ indica il valore di $y$ quando $x=0$  
+ (dove la retta interseca l'asse delle ordinate).
+- $\beta_1$ indica quanto cresce $y$ al crescere di una unità di $x$.   
+  - Se $\beta_1=0$ non c'è relazione tra $x$ e $y$.$y$ è costante (orizzontale), conoscere $x$ non ci fa cambiare la stima di $y$  
+  - Se $\beta_1>(<)0$ la relazione tra $x$ e $y$ è positiva (negativa). Quando $X$ passa da $x$ a $x+1$ la stima di $Y$ passa da $\hat{y}$ a $\hat{y}+\hat{\beta}_1$
+
+## Stima dei veri valori della popolazione
+L'ipotesi che facciamo è che esista una vera coppia di valori $\beta_0,\beta_1$ nella popolazione delle possibili rilevazioni (nella realtà).
+
+
+$\hat{\beta}_0=64.539$ e $\hat{\beta}_1= −2.976$ sono le stime che facciamo di questi veri valori
+$\beta_0$ e $\beta_1$ che sono ignoti e sono l'obiettivo della nostra indagine.
+
+Lo stimatore ai *Minimi Quadrati* è un 'buon' metodo, garantisce di produrre valori il più vicino possibile ai veri valori.
+
+ 
+## Verifica di Ipotesi
+
+**Esiste una relazione tra $Y$ e $X$**?
+
+$\hat{\beta}_1= −2.9764$ ma il **vero valore**  $\beta_1$ è davvero diverso da 0 (nessuna relazione)?
+
+
+- **Ipotesi Nulla** $H_0:\ \beta_1=0$ (\bbf{vero}$\beta_1$, non la sua stima $\hat{\beta}_1$!).  
+Non esiste alcuna relazione tra $X$ e $Y$.
+
+- **Ipotesi Alternativa** $H_1:\ \beta_1<0$  
+La relazione è negativa (al crescere di $X$ cala $Y$).
+
+Altre possibili specificazioni di $H_1:\ \beta_1>0$ e più comunemente $H_1:\ \beta_1\neq 0$.
+
+
+ 
+## Distribuzione di $\hat{\beta}_1$ (Statistica Test) assumendo vera $H_0$
+Supponiamo *vera l'ipotesi nulla $H_0$*.
+
+Quali sono i possibili valori di $\beta_1$ condizionatamente ad $X$ e $Y$ osservati?
+
+Sui dati osservati abbiamo calcolato:
+```{r}
+mod=lm(Materia.Organica~Temperatura,data=dati)
+#Beta_1 stimato:
+coefficients(mod)["Temperatura"]
+plot(dati,pch=20,col=1)
+coeff=round(coefficients(mod),1)
+title(paste("Y=",coeff[1],"+",coeff[2],"*X"))
+abline(mod,col=2)
+```
+
+## 
+
+Se vera $H_0$, un altro dataset possibile sarebbe stato:  
+```{r}
+datiPerm=dati
+datiPerm$Temperatura=sample(datiPerm$Temperatura)
+mod=lm(Materia.Organica~Temperatura,data=datiPerm)
+plot(datiPerm,pch=20,col=3)
+coeff=round(coefficients(mod),1)
+title(paste("Y=",coeff[1],"+",coeff[2],"*X"))
+abline(mod,col=2)
+```
+
+
+ 
+## I test di permutazione - in a nutshell -
+Supponiamo in un esperimento:
+```{r,echo=FALSE}
+cbind(X=1:3,Y=c(10,20,30))
+```
+
+- *Se è vera $H_0$*: non c'è relazione lineare tra $X$ e $Y$
+- Allora il trend che osservo potrebbe essere dovuto al caso. 
+- Ogni altra disposizione dei dati era ugualmente probabile 
+- Posso generare i dataset di altri ipotetici esperimenti scambiando l'ordine delle osservazioni in $Y$.
+- Quanti dataset ugualmente verosimili potevo ottenere con $X$ e $Y$ osservati?  
+ $3*2*1=3!=6$ possibili dataset.
+ 
+## Tutti i potenziali dataset
+```{r,echo=FALSE}
+Y=cbind(1:3,c(1,3,2),c(2,1,3),c(3,2,1),c(3,1,2),c(2,3,1))*10
+X=1:3
+cbind(X=X,Y)
+par(mfrow=c(2,3))
+for(i in 1:6){
+  mod=lm(Y[,i]~X)
+  plot(X,Y[,i],col=1,pch=20)
+  coeff=round(coefficients(mod),1)
+  main=paste("Y=",coeff[1],"+",coeff[2],"*X")
+  abline(mod)
+}
+```
+
+## Temperatura vs una permutazione di  Materia Organica Totale  
+
+```{r,results='asis',echo=FALSE}
+datiPerm=dati
+datiPerm$Temperatura=sample(datiPerm$Temperatura)
+mod=lm(Materia.Organica~Temperatura,data=datiPerm)
+plot(datiPerm,pch=20,col=3)
+coeff=round(coefficients(mod),1)
+title(paste("Y=",coeff[1],"+",coeff[2],"*X"))
+abline(mod,col=2)
+```
+
+
+## Temperatura vs una permutazione di  Materia Organica Totale  
+```{r,results='asis',echo=FALSE}
+datiPerm=dati
+datiPerm$Temperatura=sample(datiPerm$Temperatura)
+mod=lm(Materia.Organica~Temperatura,data=datiPerm)
+plot(datiPerm,pch=20,col=3)
+coeff=round(coefficients(mod),1)
+title(paste("Y=",coeff[1],"+",coeff[2],"*X"))
+abline(mod,col=2)
+```
+
+
+## Temperatura vs una permutazione di  Materia Organica Totale  
+```{r,results='asis',echo=FALSE}
+datiPerm=dati
+datiPerm$Materia.Organica=sample(datiPerm$Materia.Organica)
+mod=lm(Materia.Organica~Temperatura,data=datiPerm)
+plot(datiPerm,pch=20,col=3)
+coeff=round(coefficients(mod),1)
+title(paste("Y=",coeff[1],"+",coeff[2],"*X"))
+abline(mod,col=2)
+```
+
+## Replico 999 e guardo l'istogramma dei $\hat{\beta}_1$
+
+```{r}
+# beta_1 stimato sui dati osservati:
+beta1=coefficients(lm(Materia.Organica~Temperatura,data=dati))[2]
+
+# funzione che permuta i valori y e calcola il coeff beta_1
+my.beta.perm <- function(Y,X){
+  mod=lm(sample(Y)~X)
+  coefficients(mod)[2]
+}
+
+#replico 999 volte
+betas.perm= replicate(999,my.beta.perm(datiPerm$Materia.Organica, 
+                      datiPerm$Temperatura ))
+
+#il dataset osservato è una delle possibili permutazioni
+betas.perm=c(beta1,betas.perm)
+str(betas.perm)
+hist(betas.perm)
+points(beta1,0,lwd=3,col=1)
+```
+
+## Quanto probabile ERA $\hat{\beta}_1^{obs}$ ?
+(prima dell'esperimento!)
+Quanto era probabile ottenere un valore $\leq\hat{\beta}_1^{obs}$  tra i tanti valori possibili di $\hat{\beta}_1^{*b}$ (ottenuti permutando i dati)?
+
+Osservazioni:
+
+- $\hat{\beta}_1^{*b} > \hat{\beta}_1^{obs}$ (valori più vicini allo 0) indicano MINORE evidenza verso $H_1$ di quanto non faccia $\hat{\beta}_1^{obs}$.
+- $\hat{\beta}_1^{*b} \leq \hat{\beta}_1^{obs}$ indicano uguale o più evidenza verso $H_1$ di quanto non faccia $\hat{\beta}_1^{obs}$
+
+ 
+## Calcolo del p-value
+
+Su 1000 permutazioni  `r sum(betas.perm<=beta1)` volte: $\hat{\beta}_1^{*b} \leq \hat{\beta}_1^{obs}$.  
+Il p-value (significatività) è 
+$p=\frac{\#(\hat{\beta}_1^{*b} \leq \hat{\beta}_1^{obs})}{B+1}=$
+```{r}
+(p=sum(betas.perm<=beta1)/1000)
+```
+
+```{r}
+hst=hist(betas.perm,plot=FALSE)
+hist(betas.perm,col=(hst$breaks[-1]<=beta1)+2, probability=TRUE )
+points(beta1,0,lwd=3,col=1)
+```
+
+ 
+## Interpretazione
+La probabilità di ottenere una stima $p=\redUnipd{P(\hat{\beta}_1^*\leq\hat{\beta}_1=-2.9758|H_0)}$ è pari a $p=$ `r p`, cioè molto piccola. Quindi era poco probabile ottenere un valore come questo **SE è vera $H_0$**.
+
+
+Quando $p\leq.05$ (, $.01$ o $.10$, valore prefissato) rifiuto l'ipotesi che non ci sia una relazione tra X e Y ($H_0$). Sono propenso a pensare che sia vera $H_1$ (esiste una relazione ed è negativa).
+
+
+ 
+## Alternative composte (bilaterali)
+L'ipotesi $H_1:\ \beta_1< 0$ (la relazione è negativa) deve essere giustificata con conoscenze a-priori.
+
+ 
+Più frequentemente è opportuna l'ipotesi Alternativa:  
+-> $H_1:\ \beta_1\neq 0$ <-  
+(esiste una relazione, non ipotizzo la direzione)
+
+Il p-value è $p=\frac{\#(|\hat{\beta}_1^{*b} | \geq |\hat{\beta}_1^{obs}|)}{B+1}
+=$ `r (sum(betas.perm<=beta1)+sum(betas.perm>=-beta1))/1000`
+ 
+```{r,echo=FALSE}
+hst=hist(betas.perm,plot=FALSE)
+plot(hst,col=((hst$breaks[-1]<=beta1)|(hst$breaks[-length(hst$breaks)]>=-beta1))+2 )
+points(beta1,0,lwd=3,col=1)
+```
+## I test di permutazione
+
+- Non vanno confusi con i metodi bootstrap. I primi sono estrazioni senza reinserimento, i secondi con. I primi hanno proprietà quasi ottimali ed hanno (quasi sempre) un controllo esatto degli errori di primo tipo.  
+- Costituiscono un approccio generale e sono applicabili in molti contesti. Pochissime le assunzioni.
+- Trovate alcune library R dedicate: coin e flip  
+- Sono di applicabilità limitata quando ci sono molte variabili in gioco.
+
+## Dai test di permutazione (non parametrici) ai test parametrici 
+Possiamo notare che l'istogramma delle statitiche test (calcolate sui dati permutati) è ben descritto da una curva \redUnipd{Gaussiana} (normale).
+
+Senza necessità di usare la strategia di permutazione dei dati, 
+possiamo ottenere risulati analitici più 'compatti'.
+
+```{r}
+hist(betas.perm,probability = TRUE)
+curve(dnorm(x,mean(betas.perm),sd(betas.perm)),add=TRUE,col=1)
+points(beta1,0,lwd=3,col=1)
+```
+
+
+ 
+
+## Il modello lineare (semplice) 
+Assumiamo che i valori osservati si distribuiscano attorno ai veri valori 
+$\beta_0 + \beta_1 X$ secondo una legge gaussiana:
+
+
+$Y = \textrm{parte lineare} + \textrm{errore normale}$
+
+
+$Y = \beta_0 + \beta_1 X + \varepsilon$
+
+**Assunzioni del modello lineare**
+
+i. $\boldsymbol{y_i = \beta_0 + \beta_1 x_i + \varepsilon_i}$
+la relazione tra X e Y è veramente lineare a meno del termine di errore $\varepsilon_i$
+ii. le **osservazioni** sono tra loro **indipendenti**  
+conoscere il valore dell'osservazione $y_i$ non mi aiuta a prevedere il valore di $y_{i+1}$
+iii. $\boldsymbol{\varepsilon_i \sim N(0,\sigma^2), \ \forall i=1,\ldots,n}$  
+gli errori hanno distribuzione normale con media nulla e stessa varianza (omoschedasticità: stessa varianza).
+
+## Verifica di Ipotesi
+Se sono veri questi assunti, 
+
+$\hat{\beta_1}\sim N(\beta_1,\sigma^2/\sum(x_i-\bar{x})^2)$
+
+Calcoliamo la statistica test:
+
+$t=\frac{\hat{\beta_1}}{dev.std\ di\ \hat{\beta_1}}=\frac{\hat{\beta_1}}{\sqrt{\sum_{i=1}^n(y_i-\hat{y}_i)^2/\sum(x_i-\bar{x})^2/(n-2)}}$
+
+Se è vera $H_0:\beta_1=0$, $t\sim t(n-2)$
+
+Sui dati di Temperatura e $H_1: \beta_1\neq 0$ (alternativa bilaterale)
+
+```{r}
+mod=lm(Materia.Organica~Temperatura,data=dati)
+summary(mod)
+```
+
+## Il modello Lineare Multiplo
+$Y = \textrm{parte lineare} + \textrm{errore normale}$
+
+$Y = \beta_0 + \beta_1 X_1 +\ldots+\beta_p x_p + \varepsilon$
+
+**Assunzioni del modello lineare**
+
+i. $y_i = \beta_0 + \beta_1 x_{1i} +\ldots+\beta_p x_{pi} + \varepsilon_i$
+la relazione tra X e Y è veramente lineare a meno del termine di errore $\varepsilon_i$ 
+ii. le **osservazioni** sono tra loro **indipendenti**  
+iii. $\boldsymbol{\varepsilon_i \sim N(0,\sigma^2), \ \forall i=1,\ldots,n}$  
+
+
+## Regressione lineare in R
+> lm(formula,...)
+
+dove:   
+*formula* specifica il legame tra la dipendente e le indipendenti (o predittori)
+
+
+## Esempi di specificazione del modello di regressione
+Siano $y$ la variabile dipendente e $x$ e $z$ due predittori
+
+**Regressione**  |  **Regressione in R**
+-----------------|----------------------  
+$y=\beta_{0}+\beta_{1}x$   |   $lm(y \sim x)$   
+$y=\beta_{0}+\beta_{1}x+\beta_{2}z$   |   $lm(y \sim x+z)$     
+$y=\beta_{0}+\beta_{1}x+\beta_{2}z+\beta_{3}xz$     |   $lm(y \sim x+z+x:z)$    
+$y=\beta_{0}+\beta_{1}x+\beta_{2}z+\beta_{3}xz$   |  $lm(y \sim x * z)$  
+-----------------|----------------------
+
+
+Per altre opzioni sulla specificazione di un modello in R vedi:  
+> ?formula
+  
+
+ 
+## Passi fondamentali di un modello di regressione
+
+
+**Passo**  |  **Codice R**  |  **Librerie**  
+-----------|----------------|-----------  
+Costruzione modello   |   $modello1=lm(formula)$  |  stats  
+Verifica assunzioni  |   $plot(modello1)$  |  stats  
+Valutazione parametri  |   $summary(modello1)$  |  stats   
+Analisi della varianza  |   $Anova(modello1,type=``III'')$ |  car    
+Visualizzazione degli effetti  |   vedi $?effect$  |  effects  
+Confronto con altri modelli\*  |   $anova(modello1,modello2)$  |  stats  
+Confronto con altri modelli\*\*  |   $AIC(modello1)$  ;  $AIC(modello2)$   |  stats   
+-----------|----------------|-----------  
+
+  
+
+\* confronto tra modelli *nested} basato sul test $F$   
+\*\* confronto tra modelli basato sull'Akaike Information Criterion (AIC) o 
+sul Bayesian Information Criterion (BIC): vedi **?AIC** 
+  
+
+
+ 
+## Torniamo al nostro esempio
+  
+  
+```{r}
+plot(dati,pch=20,col=1)
+# per identificare osservazioni sul grafico con il mouse
+identify(dati$Temperatura,dati$Materia.Organica) 
+```
+
+## Stima del modello e valutazione dei parametri
+  
+```{r}
+modello=lm(Materia.Organica~Temperatura,data=dati) 
+summary(modello)
+```
+
+
+## Analisi della varianza
+
+```{r}
+anova(mod)
+```
+
+## Rappresentazione grafica dell'effetto dell'Temperatura
+```{r}
+library(effects) # vedi: ?effect
+eff <- allEffects(modello) 
+plot(eff,'Temperatura',ask=F,main='') 
+```
+
+## Valutazione delle assunzioni sui residui del modello
+
+
+```{r}
+par(mar=c(6, 5, 4, 2) + 0.1)
+par(mfrow=c(2,2))
+plot(modello) # vedi anche: ?plot.lm per riferimenti bibliografici
+```
+
+
+* Indipendenza  residui?
+* Normalità residui?
+* Omogeneità varianza residui?
+* Presenza casi influenti?
+
+## Approfondimento: Alla ricerca di casi influenti
+  
+-  In un modello statistico un *caso influente* è un'unità statistica le cui osservazioni hanno un forte
+impatto sulle stime dei parametri del modello   
+-  Nei modelli di regressione , un modo particolarmente efficace per identificare valori influenti, è utilizzare *la distanza di Cook (Cook, 1977)*
+-  Data una unità statistica, la distanza di Cook  è una misura di
+quanto cambierebbero i coefficienti di regressione del modello stimato
+se tale unit? fosse omessa  
+-  Maggiore è la distanza di Cook,
+tanto più l'unità statistica contribuisce a determinare i parametri del
+modello di regressione
+  
+   
+
+ 
+## Identificazione di casi influenti
+     
+-  Nel grafico appena visto R segnala le unit? statistiche con valori di distanza di Cook prossimi a 0.5 e a 1, valori da considerare come soglie di attenzione.   
+-  Fox, 2010, propone un cut-off per la distanza di Cook che tenga in considerazione il numero di osservazioni ($n$) e il numero di parametri ($k$) del modello:
+$$\dfrac{4}{(n-k-1)}$$
+
+## Nel nostro caso... 
+```{r}
+# calcolo e rappresentazione della distanza di Cook
+distanze.cook=cooks.distance(modello)
+plot(distanze.cook,xlab="nr. osservazione",ylab="distanza di Cook",cex=1.5,cex.axis=1.3,cex.lab=1.5)
+# rappresentazione della linea di cutoff in corrispondenza del valore 4/(n-k-1)
+n=length(dati$h) ; k=length(coefficients(modello))
+abline(h=4/(n-k-1),lty=2)
+text(10,0.25,"cut-off",cex=1.4)
+```
+
+
+## Nota Bene
+     
+-  La distanza di Cook non è l'unico indicatore utile per valutare i casi influenti.   Per una overview si veda in R:  ?influence.measures    
+-  L'identificazione, la valutazione e l'interpretazione dei casi influenti sono fasi fondamentali della modellazione statistica.  
+-  Tuttavia questi aspetti sono spesso sottovalutati nelle applicazioni a casi concreti :-(
+  
+    
+
+ 
+## Esercizio
+
+  
+-  Costruire un modello di regressione eliminando l'osservazione 5 
+-  Cosa cambia?
+  
+  
+
+ 
+## Esempio 2: numero di scarpe e altezza dei biologi (marini)  
+```{r}
+dati=read.csv("./dati//misureBiometricheStudenti.csv",sep=";",row.names=1)
+```
+
+$$
+Y = {\beta}_{0}+ {\beta}_{1}X{1}+ \beta_{2}X_{2}+  \beta_{3}X_{1}X_{2}+ \epsilon
+$$
+
+dove:
+    
+-  $Y$ = voto di laurea
+-  $X_{1}$ = voto al test di ingresso
+-  $X_{2}$ = voto alla maturità
+         
+## I dati
+
+Nota: Per il codice R vedi le dispense
+
+## Stima del modello e valutazione dei parametri
+    
+
+```{r}
+modello1=lm(h~n.scarpe+genere+n.scarpe:genere,data=dati)
+summary(modello1)
+```
+
+
+
+## Analisi della varianza
+
+```{r}
+anova(modello1)
+```
+
+## Selezione di un buon modello
+
+```{r}
+ # Dall'analisi sembra che l'interazione e
+ #  il voto al test di ingresso non siano predittivi
+ # Testiamo questa ipotesi attraverso
+ #  un confronto tra modelli nested
+modello.new=lm(h~n.scarpe,data=dati)
+anova(modello.new,modello1)
+# Tra i due modelli non c'? differenza significativa
+#  in termini di varianza spiegata
+# Il modello migliore (pi? parsimonioso) ? quello
+#  con il solo effetto del voto di maturit?  
+```
+
+## Confronto tra modelli in ottica bayesiana
+   
+> # Confrontiamo i BIC (Bayesian Information Criterion) dei modelli
+> # L'idea: minore ? il BIC e migliore ? il modello
+  > n=length(dati$h)
+> ( BIC1=AIC(modello1,k=log(n)) )\color{red}
+[1] 437.2823
+> ( BICnew=AIC(modello.new,k=log(n)) )\color{red}
+[1] 431.3382
+> # I risultati confermano quanto emerso in precedenza
+  > # Il modello con il solo effetto del voto di maturit?
+  > #  ? il migliore.
+  > ############################################
+> # Approfondimento:
+  > #  per la selezione del miglior modello 
+  > #  in ottica bayesiana
+  > #  vedi anche ?step
+  > ############################################
+
+Un riferimento utile: Wagenmakers (2006). A practical solution to the pervasive problems of p values. Psychonomic Bulletin,  Review.
+
+
+
+## Esercizio
+-  Valutare la bontà di adattamento del modello migliore
+-  Rappresentare graficamente la relazione stimata tra voto di laurea e voto di maturit?
