@@ -551,16 +551,13 @@ text(10,0.25,"cut-off",cex=1.4)
     
 
  
-## Esercizio
+## Esercizio 1
 
-  
--  Costruire un modello di regressione eliminando l'osservazione 5 
+-  Costruire un modello di regressione eliminando l'osservazione 10 
 -  Cosa cambia?
   
-  
-
  
-## Esempio 2: numero di scarpe e altezza dei biologi (marini)  
+## Numero di scarpe e altezza dei biologi (marini)  
 ```{r}
 dati=read.csv("./dati//misureBiometricheStudenti.csv",sep=";",row.names=1)
 ```
@@ -571,13 +568,18 @@ $$
 
 dove:
     
--  $Y$ = voto di laurea
--  $X_{1}$ = voto al test di ingresso
--  $X_{2}$ = voto alla maturità
-         
-## I dati
+-  $Y$ = $h$, altezza  
+-  $X_{1}$ = $n.scarpe$, numero di scarpe  
+-  $X_{2}$ = $genere$
 
-Nota: Per il codice R vedi le dispense
+
+## Esempio 2
+
+- rappresentare graficamente la relazione tra altezza $h$ e $n.scarpe$ considerando anche il numero di scarpe.
+- stimare un modello lineare che preveda l'altezza $h$ attraverso il $n.scarpe$.
+- è possibile stimare un modello che usi $genere$ come predittore? come?
+- stimare un modello che consideri $n.scarpe$, $genere$ e loro interazione.
+
 
 ## Stima del modello e valutazione dei parametri
     
