@@ -110,8 +110,8 @@ Descriviamo la relazione tra
 $Y=Materia.Organica$ e  
 $X=Temperatura$ con una retta.
 
-$$Materia.Organica &=& \beta_0 + \beta_1 Temperatura  \\
-Y&=&\beta_0+\beta_1X$$  
+$Materia.Organica = \beta_0 + \beta_1 Temperatura$  
+$Y=\beta_0+\beta_1X$  
 
 Facciamo passare una retta 'in mezzo' ai dati. 
 
@@ -144,7 +144,7 @@ coefficients(model)
 plot(dati,pch=20,col=2,cex=2)
 coeff=round(coefficients(model),1)
 title(paste("Y=",coeff[1],"+",coeff[2],"*X"))
-abline(model,col=2)
+abline(model,col=1)
 ```
 
 
@@ -474,9 +474,9 @@ Cosa possiamo dire del caso che siamo sotto $H_1$? commettiamo errori di II tipo
 Potenza: $1-\beta$, la probablità di trovare una relazione quando questa c'è veramente (sotto $H_1$). 
 
 Se sono rispettati gli assunti, i testi parametrici garantiscono
-- il controllo dell'errore di I tipo a livello $\lpha$
-- la massima potenza (minimo errore di II tipo $\beta$) tra tutti i test possibili
-- consistenza asintotica (se sono sotto $H_1$ rifiuto sempre per $n$ sufficientemente grandi)
+- il controllo dell'errore di I tipo a livello $\alpha$,
+- la massima potenza (minimo errore di II tipo $\beta$) tra tutti i test possibili,
+- consistenza asintotica (se sono sotto $H_1$ rifiuto sempre per $n$ sufficientemente grandi).
 
 I test di permutazione hanno solitamente potenza di poco minore e convergono ai corrispettivi test parametrici, se esistono.
 
@@ -590,6 +590,8 @@ plot(model) # vedi anche: ?plot.lm per riferimenti bibliografici
 * Normalità residui?
 * Omogeneità varianza residui?
 * Presenza casi influenti?
+
+Per favore, no test di normalità, di omoschedasticità etc. (controllano l'errore di primo tipo al contrario rispetto a quello che vorreste).
 
 ## Approfondimento: Alla ricerca di casi influenti
   
@@ -897,9 +899,9 @@ abline(0,1,col=2)
 Per ogni valore dell'ascissa $\alpha$ vediamo la stima empirica della potenza. 
 
 
-**Approfondimento:** 
-- Come variano gli errori di primo tipo se modifichiamo la deviazione standard degli errori? 
-- Come varia se variamo la numerosità del campione?
-- Stesse domande per la simulazione sotto $H_1$ (studio della potenza)
-- Fare valutazioni analoghe per gli intervalli di confidenza
-
+**Approfondimento:**  
+- Come variano gli errori di primo tipo se modifichiamo la deviazione standard degli errori?  
+- Come varia se variamo la numerosità del campione?  
+- Stesse domande per la simulazione sotto $H_1$ (studio della potenza)  
+- Fare valutazioni analoghe per gli intervalli di confidenza  
+  
