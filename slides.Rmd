@@ -327,13 +327,13 @@ my.beta.perm <- function(Y,X){
 }
 
 #replico 9999 volte
-betas.perm= replicate(B-1,my.beta.perm(datiPerm$Materia.Organica, 
+beta.perm= replicate(B-1,my.beta.perm(datiPerm$Materia.Organica, 
                       datiPerm$Temperatura ))
 
 #il dataset osservato è una delle possibili permutazioni
-betas.perm=c(beta1,betas.perm)
-str(betas.perm)
-hist(betas.perm,50)
+beta.perm=c(beta1,beta.perm)
+str(beta.perm)
+hist(beta.perm,50)
 points(beta1,0,lwd=3,col=1)
 ```
 
