@@ -349,22 +349,22 @@ Osservazioni:
  
 ## Calcolo del p-value
 
-Su B=`r B` permutazioni  `r sum(betas.perm<=beta1)` volte: $\hat{\beta}_1^{*b} \leq \hat{\beta}_1^{obs}$.  
+Su B=`r B` permutazioni  `r sum(beta.perm<=beta1)` volte: $\hat{\beta}_1^{*b} \leq \hat{\beta}_1^{obs}$.  
 Il p-value (significatività) è 
 $p=\frac{\#(\hat{\beta}_1^{*b} \leq \hat{\beta}_1^{obs})}{B+1}=$
 ```{r}
-(p=sum(betas.perm<=beta1)/B)
+(p=sum(beta.perm<=beta1)/B)
 ```
 
 ```{r}
-hst=hist(betas.perm,plot=FALSE,50)
-hist(betas.perm,col=(hst$breaks[-1]<=beta1)+2, probability=TRUE ,50)
+hst=hist(beta.perm,plot=FALSE,50)
+hist(beta.perm,col=(hst$breaks[-1]<=beta1)+2, probability=TRUE ,50)
 points(beta1,0,lwd=3,col=1)
 ```
 
  
 ## Interpretazione
-La probabilità di ottenere una stima $p=\redUnipd{P(\hat{\beta}_1^*\leq\hat{\beta}_1=-2.9758|H_0)}$ è pari a $p=$ `r p`, cioè molto piccola. Quindi era poco probabile ottenere un valore come questo **SE è vera $H_0$**.
+La probabilità di ottenere una stima $p=P(\hat{\beta}_1^*\leq\hat{\beta}_1=-2.9758|H_0)$ è pari a $p=$ `r p`, cioè molto piccola. Quindi era poco probabile ottenere un valore come questo **SE è vera $H_0$**.
 
 L'approccio di Neyman-Pearson ha reso comune l'uso di fissare una soglia di significatività ad esempio $\alpha=.05$ (o $=.01$).
 Quando $p\leq\alpha$ rifiuto l'ipotesi che non ci sia una relazione tra X e Y ($H_0$). Sono propenso a pensare che sia vera $H_1$ (esiste una relazione ed è negativa).
@@ -379,7 +379,7 @@ Quando $p\leq\alpha$ rifiuto l'ipotesi che non ci sia una relazione tra X e Y ($
 **Controllo dell'errore di I tipo**
 
 Vogliamo garantirci di non dire stupidaggini (pochi falsi positivi), meglio essere conservativi:
-$P(p-value \leq alpha|H_0)\leq \alpha$
+$P(p-value \leq \alpha|H_0)\leq \alpha$
 
 Cioè ho costruito una macchina che nel long run (molte repliche dell'esperimento) trova false correlazioni con probabilità $\alpha$ (es $0.05$, cioè 5\%).
 
@@ -394,10 +394,10 @@ $H_1:\ \beta_1\neq 0$
 
 Considero anomali coefficienti stimati molto piccoli ma anche molto grandi ('lontani da 0').
 Il p-value è $p=\frac{\#(|\hat{\beta}_1^{*b} | \geq |\hat{\beta}_1^{obs}|)}{B+1}
-=$ `r (sum(betas.perm<=beta1)+sum(betas.perm>=-beta1))/B`
+=$ `r (sum(beta.perm<=beta1)+sum(beta.perm>=-beta1))/B`
  
 ```{r,echo=FALSE}
-hst=hist(betas.perm,plot=FALSE,50)
+hst=hist(beta.perm,plot=FALSE,50)
 plot(hst,col=((hst$breaks[-1]<=beta1)|(hst$breaks[-length(hst$breaks)]>=-beta1))+2 ,50)
 points(beta1,0,lwd=3,col=1)
 points(-beta1,0,lwd=3,col=1)
@@ -413,8 +413,8 @@ points(-beta1,0,lwd=3,col=1)
 ## Dai test di permutazione (non parametrici) ai test parametrici 
 Possiamo notare che l'istogramma delle statitiche test (calcolate sui dati permutati) è ben descritto da una curva **Gaussiana** (normale).
 ```{r}
-hist(betas.perm,50,probability = TRUE,col=2)
-curve(dnorm(x,mean(betas.perm),sd(betas.perm)),add=TRUE,col=1,lwd=3)
+hist(beta.perm,50,probability = TRUE,col=2)
+curve(dnorm(x,mean(beta.perm),sd(beta.perm)),add=TRUE,col=1,lwd=3)
 points(beta1,0,lwd=3,col=1)
 ```
 
@@ -817,16 +817,16 @@ Posso usare errori normali con media e dev std calcolata nel campione
 ```{r}
 datiF=dati[dati$genere=="F",]
 m=mean(datiF$h)
-s=sd(dati$h)
+s=sd(datiF$h)
 ```
 
 ```{r}
 #seleziono solo gli n.scarpe delle femmine 
-n=length(dati$n.scarpe)
+n=length(datiF$n.scarpe)
 # simulo h
 h=rnorm(n,m,s)
 #e stimo i parametri
-summary(lm(h~dati$n.scarpe))
+summary(lm(h~datiF$n.scarpe))
 ```
 
 Ora genero molti (1000?) di questi dataset e conservo il p-value
@@ -837,7 +837,7 @@ sim <- function(n.scarpe,n,m,s){
   summary(lm(h~n.scarpe))$coefficients["n.scarpe","Pr(>|t|)"]
 }
 
-p.sim=replicate(1000,sim(dati$n.scarpe,n,m,s))
+p.sim=replicate(1000,sim(datiF$n.scarpe,n,m,s))
 ```
 
 - Cosa mi aspetto che siano questi p-value?  
