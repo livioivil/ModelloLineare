@@ -12,6 +12,9 @@ widgets     : []            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 license     : by-nc-sa
 ---
+## online su Github!
+Tutto il materiale della lezione è disponibile online <https://github.com/livioivil/ModelloLineare>
+
 ## Per iniziare
 ```{r}
 #pulizia
@@ -37,7 +40,7 @@ Arianna Mazzariol (AA 12/13) Distribuzione ed ecologia di Escherichia coli ed En
 
 
 
-## lettura dei dati
+## Lettura dei dati
 
 ```{r}
 load("./dati/MateriaOrganica.Rdata")
