@@ -1,0 +1,22 @@
+* installing *source* package ‘flip’ ...
+** libs
+g++ -I/usr/share/R/include      -I"/home/livio/R/x86_64-pc-linux-gnu-library/3.2/Rcpp/include" -I"/home/livio/R/x86_64-pc-linux-gnu-library/3.2/RcppArmadillo/include"   -fpic  -O3 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2    -c RcppExports.cpp -o RcppExports.o
+RcppExports.cpp:11:1: error: ‘mat’ does not name a type
+ mat rom(int n);
+ ^
+RcppExports.cpp: In function ‘SEXPREC* flip_rom(SEXP)’:
+RcppExports.cpp:17:32: error: ‘rom’ was not declared in this scope
+     __result = Rcpp::wrap(rom(n));
+                                ^
+make: *** [RcppExports.o] Error 1
+g++ -I/usr/share/R/include      -I"/home/livio/R/x86_64-pc-linux-gnu-library/3.2/Rcpp/include" -I"/home/livio/R/x86_64-pc-linux-gnu-library/3.2/RcppArmadillo/include"   -fpic  -O3 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2    -c RcppExports.cpp -o RcppExports.o
+RcppExports.cpp:11:1: error: ‘mat’ does not name a type
+ mat rom(int n);
+ ^
+RcppExports.cpp: In function ‘SEXPREC* flip_rom(SEXP)’:
+RcppExports.cpp:17:32: error: ‘rom’ was not declared in this scope
+     __result = Rcpp::wrap(rom(n));
+                                ^
+make: *** [RcppExports.o] Error 1
+ERROR: compilation failed for package ‘flip’
+* removing ‘/home/livio/github/flip.Rcheck/flip’

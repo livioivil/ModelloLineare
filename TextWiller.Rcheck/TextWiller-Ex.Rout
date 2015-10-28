@@ -1,0 +1,270 @@
+
+R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+Copyright (C) 2015 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "TextWiller"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('TextWiller')
+Loading required package: stringr
+Loading required package: twitteR
+Loading required package: RCurl
+Loading required package: bitops
+Loading required package: SnowballC
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("RTHound")
+> ### * RTHound
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: RTHound
+> ### Title: RTHound
+> ### Aliases: RTHound
+> ### Keywords: ~kwd1 ~kwd2
+> 
+> ### ** Examples
+> 
+>  ## Not run: 
+> ##D  testo=c(
+> ##D  "RT @LAVonlus: Tre miti da sfatare sulla #vivisezione. Le risposte  ai luoghi comuni della sperimentazione animale  http://t.co/zHSfam16DT",
+> ##D  "Tre miti da sfatare sulla #vivisezione. Le risposte  ai luoghi comuni della sperimentazione animale  http://t.co/zHSfam16DT",
+> ##D  "RT @LAVonlus: Tre miti da sfatare sulla #vivisezione. Le risposte  ai luoghi comuni della sperimentazione animale  http://t.co/zHSfam16DT",
+> ##D  "RT @orianoPER: La #sperimentazioneanimale è inutile perché non predittiva per la specie umana. MEDICI ANTI #VIVISEZIONE- LIMAV http://t.co/" ,
+> ##D  "La #sperimentazioneanimale è inutile perché non predittiva per la specie umana. MEDICI ANTI #VIVISEZIONE- LIMAV http://t.co/3MwubXIH8g",
+> ##D  "RT @orianoPER: La #ricerca in #Medicina con #sperimentazioneanimale non e' predittiva per la specie umana. MEDICI ANTI #VIVISEZIONE http://t",
+> ##D  "RT @HuffPostItalia: Il Governo italiano non fermi la sperimentazione animale. Intervista a Elena Cattaneo http://t.co/q1dm430a9j",
+> ##D  "RT @HuffPostItalia: \"Il Governo italiano non fermi la sperimentazione animale\". Intervista a Elena Cattaneo http://t.co/q1dm430a9j",
+> ##D  "\"Il Governo italiano non fermi la sperimentazione animale\". Intervista a Elena Cattaneo http://t.co/q1dm430a9j",
+> ##D  "RT @orianoPER: @EnricoLetta LA #VIVISEZIONE NON SERVE: PAROLA DI GLAXO-APTUIT http://t.co/mtsHJjDIvu #StopVivisection #SperimentazioneAnima&")
+> ##D  
+> ##D  testo=RTHound(testo, S = 3, L = 1, 
+> ##D                  hclust.dist = 100, hclust.method = "complete",
+> ##D                  showTopN=3)
+> ##D 
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("TextWiller-package")
+> ### * TextWiller-package
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: TextWiller-package
+> ### Title: Collection of functions for text mining, specially devoted to
+> ###   the italian language
+> ### Aliases: TextWiller-package TextWiller
+> ### Keywords: package
+> 
+> ### ** Examples
+> 
+>  ## Not run: 
+> ##D # install.packages("devtools") # if you don't already have it.
+> ##D library(devtools)
+> ##D install_github("TextWiller", "livioivil")
+> ##D library(TextWiller)
+> ## End(Not run)
+> 
+> normalizzaTesti(c('ciao bella!','www.associazionerospo.org','noooo, che grandeeeeee!!!!!','mitticooo', 'mai possibile?!?!'))
+[1] "ciao bello"         "wwwurlwww"          "emotenooo grandeee"
+[4] "mitico"             "mai possibile"     
+attr(,"counts")
+     Conteggi.\\? Conteggi.\\! Conteggi.@ Conteggi.# Conteggi.(€|euro)
+[1,]            0            1          0          0                 0
+[2,]            0            0          0          0                 0
+[3,]            0            5          0          0                 0
+[4,]            0            0          0          0                 0
+[5,]            2            2          0          0                 0
+     Conteggi.(\\$|dollar) Conteggi.SUPPRESSEDTEXT
+[1,]                     0                       0
+[2,]                     0                       0
+[3,]                     0                       0
+[4,]                     0                       0
+[5,]                     0                       0
+> 
+> sentiment(c("ciao bella!","farabutto!","fofi sei figo!"))
+ciao bello  farabutto  fofi figo 
+         1         -1          1 
+> 
+> classificaUtenti(c('livio','alessandra'))
+     livio alessandra 
+    "masc"     "femm" 
+> 
+> #extract short urls and get the long ones
+> ## Not run: urls=urlExtract("Influenza Vaccination | ONS - Oncology Nursing Society http://t.co/924sRKGBU9 See All http://t.co/dbtPJRMl00")
+> 
+> #extract users:
+> ## Not run: extract("@livio: #ciao","@\w+")
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("classificaUtenti")
+> ### * classificaUtenti
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: classificaUtenti
+> ### Title: Associa i nomi in names ai valori indicati da
+> ###   vocabolarioNomiPropri
+> ### Aliases: classificaUtenti vocabolarioNomiPropri vocabolarioLuoghi
+> ### Keywords: ~kwd1 ~kwd2
+> 
+> ### ** Examples
+> 
+>  ## Not run: data(vocabolarioNomiPropri)
+>  ## Not run: str(vocabolarioNomiPropri)
+> classificaUtenti(c('livio','alessandra'))
+     livio alessandra 
+    "masc"     "femm" 
+> data(vocabolarioLuoghi)
+> classificaUtenti(c('Bosa','Pordenone, Italy'),vocabolarioLuoghi)
+            bosa pordenone, italy 
+         "Isole"       "Nord-est" 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("extract")
+> ### * extract
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: extract
+> ### Title: Estrazione di regular expression (e quindi users, hashtag) e
+> ###   shorturl
+> ### Aliases: urlExtract shorturl2url patternExtract
+> ### Keywords: ~kwd1 ~kwd2
+> 
+> ### ** Examples
+> 
+>  ## Not run: 
+> ##D  testo=c("Influenza Vaccination | ONS - Oncology Nursing Society http://t.co/924sRKGBU9 See All http://t.co/dbtPJRMl00,See All http://t.co/dbtPJRMl00")
+> ##D  shorturl2url(testo,id=names(testo))
+> ##D urls=urlExtract(testo)
+> ##D patternExtract(c("@luca @paolo: buon giorno!", "@matteo: a te!"), pattern="@\w+")
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("normalizzaTesti")
+> ### * normalizzaTesti
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: normalizzaTesti
+> ### Title: Varie funzioni di normalizzazione del testo
+> ### Aliases: normalizzaTesti normalizzacaratteri normalizzaemote
+> ###   normalizzahtml normalizzaslang normalizzapunteggiatura tryTolower
+> ###   itastopwords removeStopwords preprocessingEncoding
+> ### Keywords: ~kwd1 ~kwd2
+> 
+> ### ** Examples
+> 
+> testoNorm <- normalizzaTesti(c('ciao bella!','www.associazionerospo.org','noooo, che grandeeeeee!!!!!','mitticooo', 'mai possibile?!?!'))
+> testoNorm
+[1] "ciao bello"         "wwwurlwww"          "emotenooo grandeee"
+[4] "mitico"             "mai possibile"     
+attr(,"counts")
+     Conteggi.\\? Conteggi.\\! Conteggi.@ Conteggi.# Conteggi.(€|euro)
+[1,]            0            1          0          0                 0
+[2,]            0            0          0          0                 0
+[3,]            0            5          0          0                 0
+[4,]            0            0          0          0                 0
+[5,]            2            2          0          0                 0
+     Conteggi.(\\$|dollar) Conteggi.SUPPRESSEDTEXT
+[1,]                     0                       0
+[2,]                     0                       0
+[3,]                     0                       0
+[4,]                     0                       0
+[5,]                     0                       0
+> attr(testoNorm,"counts")
+     Conteggi.\\? Conteggi.\\! Conteggi.@ Conteggi.# Conteggi.(€|euro)
+[1,]            0            1          0          0                 0
+[2,]            0            0          0          0                 0
+[3,]            0            5          0          0                 0
+[4,]            0            0          0          0                 0
+[5,]            2            2          0          0                 0
+     Conteggi.(\\$|dollar) Conteggi.SUPPRESSEDTEXT
+[1,]                     0                       0
+[2,]                     0                       0
+[3,]                     0                       0
+[4,]                     0                       0
+[5,]                     0                       0
+> 
+> 
+> 
+> cleanEx()
+> nameEx("sentiment")
+> ### * sentiment
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: sentiment
+> ### Title: Performs sentiment analysis
+> ### Aliases: sentiment sentimentVocabularies vocabolariMadda
+> ### Keywords: ~kwd1 ~kwd2
+> 
+> ### ** Examples
+> 
+> sentiment(c("ciao bella", "ciao", "good","casa", "farabutto!"))
+ciao bello       ciao       good       casa  farabutto 
+         1          0          0          0         -1 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("timeStamp")
+> ### * timeStamp
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: TimeStamp
+> ### Title: Funzioni di gestione delle date
+> ### Aliases: fixTimeStamp selezionaIntervalloTimeStamp
+> ### Keywords: ~kwd1 ~kwd2
+> 
+> ### ** Examples
+> 
+>  ## Not run: TW=fixTimeStamp(TW)
+>  ## Not run: TW=selezionaIntervallo(TW,as.POSIXct(c("2013-12-27 17:54:42 CET", "2013-12-27 22:33:38 CET")))
+>  ## Not run: TW$created.round <- as.POSIXct(round(t$created,"hour"))
+> 
+> 
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  0.502 0.036 0.538 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

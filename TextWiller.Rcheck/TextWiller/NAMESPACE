@@ -1,0 +1,8 @@
+exportPattern("^[[:alpha:]]+")
+
+import(stringr)
+import(twitteR)
+import(RCurl)
+
+importFrom(SnowballC,wordStem)
+

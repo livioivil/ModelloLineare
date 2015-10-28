@@ -1,0 +1,54 @@
+* using log directory ‘/home/livio/github/flip.Rcheck’
+* using R version 3.2.0 (2015-04-16)
+* using platform: x86_64-pc-linux-gnu (64-bit)
+* using session charset: UTF-8
+* checking for file ‘flip/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘flip’ version ‘2.4.3’
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... WARNING
+Found the following executable files:
+  .git/objects/0d/2fb83a0ee03dc527f326e0cd4334c4c84e8376
+  .git/objects/14/4b4f6f744111b83808a726897d97edd9ed2db5
+  .git/objects/1e/40ca9367f0f0a710b2b21577671a6e7ec2d00c
+  .git/objects/44/60013ffcf12064de3b4a9b62b04ebf1159913f
+  .git/objects/5a/b8911acd96858b3aca4d78b5bbf5d3055d13be
+  .git/objects/5f/0b32356d05e92703e64693a6b63083cdf9ab7a
+  .git/objects/65/1dec42d98adee8e150a34eef3ec6f98d58357e
+  .git/objects/70/9ecc870a53e71db2d60a4b1cb0c52628ffbd72
+  .git/objects/78/abdd9513a330933d9cd51765a737ecd4e4c4a8
+  .git/objects/83/6aaf3ef9e9bf809f83e6997b9d85b08e0daaaf
+  .git/objects/8f/cbbd6d2804869db6dde0b144d567bbfdf22eff
+  .git/objects/90/90b1c35defa96222af426a75f1ca7359d7ce6d
+  .git/objects/96/469d969d601c3c722679536c0093fa62eaf325
+  .git/objects/9f/883059c87c8e5db0a3c7a6ebb74d168375b398
+  .git/objects/a0/1483ded66e9051b9f11aca4977b122f9f9073d
+  .git/objects/a6/9628d6e4ab1123cc3300ada7d5e41b079e3a23
+  .git/objects/b1/2dbb0303508057fcd44477f804ff6fa951437f
+  .git/objects/b5/f3593e5683a65270fe3bdcdca7656eb9e05f2d
+  .git/objects/c7/87c460baa181835592e2a45b55a077a54812bb
+  .git/objects/cd/a0a04f3aeb81acac8aefffbf63ab77cf8b5433
+  .git/objects/d1/f056cdbeae5b7ba7066e517082482994a65c94
+  .git/objects/d2/2e972ce5a34e900faa07973bd236a982dfa225
+  .git/objects/df/189a56a7f3308aeed8f6b51cf63fd7dc58d5ee
+  .git/objects/e9/3d9fc43b487fc36a3375501b92e130141a3c42
+  .git/objects/fa/dd0ef39830336e20c074a1156828187e50c1b8
+Source packages should not contain undeclared executable files.
+See section ‘Package structure’ in the ‘Writing R Extensions’ manual.
+* checking for hidden files and directories ... NOTE
+Found the following hidden files and directories:
+  .Rhistory
+  .gitignore
+  .Rproj.user
+  .git
+These were most likely included in error. See section ‘Package
+structure’ in the ‘Writing R Extensions’ manual.
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘flip’ can be installed ... ERROR
+Installation failed.
+See ‘/home/livio/github/flip.Rcheck/00install.out’ for details.
+Status: 1 ERROR, 1 WARNING, 1 NOTE
