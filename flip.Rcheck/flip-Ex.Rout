@@ -1,0 +1,621 @@
+
+R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+Copyright (C) 2015 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "flip"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('flip')
+Loading required package: e1071
+Loading required package: someMTP
+Loading required package: cherry
+Loading required package: bitops
+Loading required package: lpSolve
+Loading required package: Matrix
+Loading required package: slam
+
+Attaching package: ‘flip’
+
+The following object is masked from ‘package:someMTP’:
+
+    p.value
+
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("flip-package")
+> ### * flip-package
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: flip-package
+> ### Title: The library is devoted to permutation-based inferential methods.
+> ### Aliases: flip-package
+> ### Keywords: package
+> 
+> ### ** Examples
+> 
+> 
+> Y=data.frame(matrix(rnorm(50),10,5))
+> names(Y)=LETTERS[1:5]
+> Y[,1:2]=Y[,1:2]
+> x=rep(0:1,5)
+> data=data.frame(x=x, Z=rnorm(10))
+> res = flip(Y+matrix(x*2,10,5),~x,~Z,data=data)
+    > res
+  Test  Stat tail p-value
+A    t 4.198   ><  0.0050
+B    t 2.057   ><  0.1050
+C    t 2.624   ><  0.0240
+D    t 2.816   ><  0.0300
+E    t 6.299   ><  0.0020
+> 
+> plot(res)
+> 
+> p2=npc(res,"fisher",subsets=list(c1=c("A","B"),c2=names(Y)))
+1 / 22 / 2
+> p2
+   comb.funct nVar   Stat p-value
+c1     Fisher    2  7.552  0.0070
+c2     Fisher    5 21.003  0.0030
+> 
+> 
+> 
+> cleanEx()
+> nameEx("flip")
+> ### * flip
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: flip
+> ### Title: The main function for univariate and multivariate testing under
+> ###   a permutation (and rotation) framework + some utilities.
+> ### Aliases: flip flip.statTest orthoZ
+> ### Keywords: htest
+> 
+> ### ** Examples
+> 
+> Y=matrix(rnorm(50),10,5)
+> colnames(Y)=LETTERS[1:5]
+> Y[,1:2]=Y[,1:2] +2
+> res = flip(Y)
+> res
+  Test    Stat tail p-value
+A    t  8.6379   ><  0.0020
+B    t  6.6493   ><  0.0039
+C    t -0.4423   ><  0.6699
+D    t  0.4722   ><  0.6621
+E    t  0.7120   ><  0.4785
+> plot(res)
+> 
+> X=rep(0:1,5)
+> Y=Y+matrix(X*2,10,5)
+> 
+> data=data.frame(Y,X=X, Z=rnorm(10))
+> #testing dependence among Y's and X
+> (res = flip(Y,~X,data=data))
+      Test  Stat tail p-value
+A    t 4.465   ><  0.0080
+B    t 2.008   ><  0.0830
+C    t 2.245   ><  0.0780
+D    t 3.365   ><  0.0040
+E    t 5.699   ><  0.0080
+> #same as:
+> #res = flip(A+B+C+D+E~X,data=data)
+> 
+> 
+> #testing dependence among Y's and X, also using covariates
+> res = flip(Y,~X,~Z,data=data)
+    > res
+  Test  Stat tail p-value
+A    t 4.198   ><  0.0010
+B    t 2.057   ><  0.1070
+C    t 2.624   ><  0.0170
+D    t 2.816   ><  0.0240
+E    t 6.299   ><  0.0010
+> #Note that 
+> #flip(Y,X=~X,Z=~1,data=data)
+> #is different from
+> #flip(Y,~X,data=data)
+> #since the former is based on orthogonalized residuals of Y and X by Z.
+> 
+> ## Not run: 
+> ##D #Rotation tests:
+> ##D rot=flip(Y,X,Z=~1,testType="rotation") 
+> ##D # note the use Z=~1.
+> ## End(Not run)
+> 
+> #Using rank tests:
+> res = flip(Y,~X,data=data,statTest="Wilcoxon")
+    > res
+      Test  Stat tail p-value
+A Wilcoxon 2.535   ><  0.0150
+B Wilcoxon 1.731   ><  0.1060
+C Wilcoxon 1.553   ><  0.1600
+D Wilcoxon 2.532   ><  0.0150
+E Wilcoxon 2.517   ><  0.0150
+> 
+> #testing symmetry of Y around 0
+> Y[,1:2]=Y[,1:2] +2
+> res = flip(Y)
+> res
+  Test   Stat tail p-value
+A    t 11.349   ><  0.0020
+B    t 13.313   ><  0.0020
+C    t  2.410   ><  0.0371
+D    t  2.842   ><  0.0273
+E    t  2.733   ><  0.0293
+> plot(res)
+> 
+> 
+> #use of strata (in this case equal to paired samples)
+> data$S=rep(1:5,rep(2,5))
+> #paired t
+> flip(A+B+C+D+E~X,data=data,statTest="t",Strata=~S)
+  Test   Stat tail p-value
+A    t  3.558   ><  0.0625
+B    t  3.006   ><  0.0625
+C    t  2.657   ><  0.1250
+D    t  4.457   ><  0.0625
+E    t 10.432   ><  0.0625
+> #signed Rank test
+> flip(A+B+C+D+E~X,data=data,statTest="Wilcox",Strata=~S)
+           Test Stat tail p-value
+A Wilcoxon Sign   15   ><  0.0625
+B Wilcoxon Sign   15   ><  0.0625
+C Wilcoxon Sign   13   ><  0.1250
+D Wilcoxon Sign   15   ><  0.0625
+E Wilcoxon Sign   15   ><  0.0625
+> 
+> # tests for categorical data
+> data=data.frame(X=rep(0:2,10))
+> data=data.frame(X=factor(data$X),Y=factor(rbinom(30,2,.2+.2*data$X)))
+> flip(~Y,~X,data=data,statTest="chisq")
+                 Test  Stat tail p-value
+X_|_Y Chi Squared 14.61    >  0.0070
+> # separated chisq (Finos and Salmaso, 2004. Nonparametric multi-focus analysis 
+> # for categorical variables. CommStat - T.M.)
+> (res.sep=flip(~Y,~X,data=data,statTest="chisq.separated"))
+                      Test    Stat tail p-value
+Y0_|_X.0. signed-Chisq  0.3651   ><  0.7030
+Y0_|_X.1. signed-Chisq  1.4606   ><  0.0380
+Y0_|_X.2. signed-Chisq -1.8257   ><  0.0090
+Y1_|_X.0. signed-Chisq  0.3203   ><  0.7150
+Y1_|_X.1. signed-Chisq -0.1601   ><  1.0000
+Y1_|_X.2. signed-Chisq -0.1601   ><  1.0000
+Y2_|_X.0. signed-Chisq -0.8729   ><  0.3880
+Y2_|_X.1. signed-Chisq -1.5275   ><  0.0680
+Y2_|_X.2. signed-Chisq  2.4004   ><  0.0040
+> npc(res.sep,"sumT2") #note that combined test statistic is the same as chisq
+   comb.funct nVar  Stat p-value
+V1      sumT2    9 14.61  0.0060
+> 
+> ## Not run: 
+> ##D # User-defined test statistic:
+> ##D my.fun <- function(Y){
+> ##D   summary(lm(Y~X))$coeff[1,"Pr(>|t|)"]
+> ##D }
+> ##D X<- matrix(rep(0:2,10))
+> ##D Y <- matrix(rnorm(30))
+> ##D flip(Y=Y,X=X,statTest=my.fun)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("flip.object-class")
+> ### * flip.object-class
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: flip.object-class
+> ### Title: Class "flip.object" (and related functions) for storing the
+> ###   result of the function flip and flipMix
+> ### Aliases: draw p.value plot size result getFlip cFlip flip.object-class
+> ###   [,flip.object-method [,flip.object,ANY,ANY,ANY-method
+> ###   [[,flip.object-method hist,flip.object-method
+> ###   length,flip.object-method names,flip.object-method
+> ###   names<-,flip.object-method p.value,flip.object-method
+> ###   plot,flip.object-method result,flip.object-method
+> ###   show,flip.object-method size,flip.object-method
+> ###   sort,flip.object-method summary,flip.object-method
+> ###   p.adjust,flip.object-method numericOrmatrixOrNULL-class
+> ###   arrayOrNULL-class data.frameOrNULL-class numericOrmatrixOrNULL
+> ###   arrayOrNULL data.frameOrNULL
+> ### Keywords: classes
+> 
+> ### ** Examples
+> 
+> showClass("flip.object")
+Class "flip.object" [package "flip"]
+
+Slots:
+                                                                        
+Name:                               res                             call
+Class:                 data.frameOrNULL                             call
+                                                                        
+Name:                             permP                            permT
+Class:                      arrayOrNULL                      arrayOrNULL
+                                                                        
+Name:                         permSpace                            permY
+Class:                       listOrNULL                      arrayOrNULL
+                                                                        
+Name:                              tail                             data
+Class: numericOrmatrixOrcharacterOrNULL                       listOrNULL
+                                       
+Name:                          call.env
+Class:                        envOrNULL
+> 
+> y=matrix(rnorm(50),10,5)
+> colnames(y)=c("X1","X2","Y1","Y2","Y3")
+> res=flip(y)
+> 
+> ## Sort by p-values
+> sort(res)
+   Test    Stat tail p-value
+Y3    t  0.7120   ><  0.4785
+X2    t  0.7358   ><  0.4844
+X1    t  0.5356   ><  0.6133
+Y2    t  0.4722   ><  0.6621
+Y1    t -0.4423   ><  0.6699
+> 
+> ## Selecting tests
+> res[1:2]
+   Test   Stat tail p-value
+X1    t 0.5356   ><  0.6133
+X2    t 0.7358   ><  0.4844
+> #same as
+> res["X"]
+   Test   Stat tail p-value
+X1    t 0.5356   ><  0.6133
+X2    t 0.7358   ><  0.4844
+> #different from (it selects tests having "1" or "2" in the name)
+> res[c("1","2")]
+   Test    Stat tail p-value
+X1    t  0.5356   ><  0.6133
+Y1    t -0.4423   ><  0.6699
+X2    t  0.7358   ><  0.4844
+Y2    t  0.4722   ><  0.6621
+> 
+> ## Concatenates two flip-objects
+> cFlip(res[1:2],res[5])
+   Test tail   Stat p-value
+X1    t   >< 0.5356  0.6133
+X2    t   >< 0.7358  0.4844
+Y3    t   >< 0.7120  0.4785
+> 
+> 
+> #plotting results
+> plot(flip(y))
+> 
+> #Get any slot of the flip-object. eg the permutation space:
+> head(getFlip(res,"permT"))
+              X1          X2         Y1          Y2         Y3
+Tobs  0.53557446  0.73576996 -0.4423488  0.47217304  0.7119866
+T*1   0.79760043  0.37642720 -0.7321421 -0.12336630 -0.2179185
+T*2   0.06800073  0.24374303 -0.1246528 -0.38671367  0.8398839
+T*3   0.31326144 -0.09820374 -0.4017500 -1.02887932 -0.1013620
+T*4  -0.06167774  0.17280734  0.5336138  0.51989702 -0.1011255
+T*5   0.18225486 -0.16883906  0.2526084 -0.07745745 -1.0740028
+> #Get any element of the list obj@data. eg Y:
+> getFlip(res,"Y")
+> #Get any columns of the results table: obj@res. eg Statistic (choose among colnames(obj@res) ):
+> getFlip(res,"Stat")
+      Stat
+X1  0.5356
+X2  0.7358
+Y1 -0.4423
+Y2  0.4722
+Y3  0.7120
+> 
+> 
+> 
+> cleanEx()
+> nameEx("flipMix")
+> ### * flipMix
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: flipMix
+> ### Title: The main function for testing mixed models under a permutation
+> ###   (and rotation) framework
+> ### Aliases: flipMix flipMixWithin obs2coeffWithin
+> ### Keywords: htest
+> 
+> ### ** Examples
+> 
+> N=10
+> toyData= data.frame(subj=rep(1:N,rep(4,N)), Within=rep(1:2,N*2),
++           XBetween= rep(1:2,rep(N/2*4,2)),ZBetween= rep(rnorm(N/2),rep(8,N/2)))
+> toyData= cbind(Y1=rnorm(n=N*4,mean=toyData$subj+toyData$ZBetween+toyData$XBetween),
++                Y2=rnorm(n=N*4,mean=toyData$subj+toyData$ZBetween+toyData$Within*2),toyData)
+> (toyData)
+           Y1        Y2 subj Within XBetween   ZBetween
+1   0.5530778  1.666051    1      1        1 -0.6264538
+2   1.8609752  4.738128    1      2        1 -0.6264538
+3   2.1118709  3.142079    1      1        1 -0.6264538
+4   1.9493275  4.261200    1      2        1 -0.6264538
+5   2.0681578  4.254654    2      1        1 -0.6264538
+6   3.8853274  5.771652    2      2        1 -0.6264538
+7   2.7633894  2.761520    2      1        1 -0.6264538
+8   1.7523056  5.714666    2      2        1 -0.6264538
+9   1.9689434  4.054280    3      1        1  0.1836433
+10  5.3085742  8.616667    3      2        1  0.1836433
+11  4.1387097  7.164043    3      1        1  0.1836433
+12  4.1674531  6.816422    3      2        1  0.1836433
+13  6.1274795  5.139509    4      1        1  0.1836433
+14  6.0048645  8.753363    4      2        1  0.1836433
+15  5.7775446  6.048589    4      1        1  0.1836433
+16  6.1026207 10.585261    4      2        1  0.1836433
+17  5.9465077  6.125131    5      1        1 -0.8356286
+18  5.2389364  8.854111    5      2        1 -0.8356286
+19  3.1750197  6.192374    5      1        1 -0.8356286
+20  5.7841971  7.421098    5      2        1 -0.8356286
+21  7.1082426  7.353164    6      1        2 -0.8356286
+22  7.0085759  7.359413    6      2        2 -0.8356286
+23  5.6936190  8.629926    6      1        2 -0.8356286
+24  6.6862213  9.317625    6      2        2 -0.8356286
+25 11.0132224 12.767892    7      1        2  1.5952808
+26 11.9539604 13.070790    7      2        2  1.5952808
+27 10.4924931  9.885334    7      1        2  1.5952808
+28 10.9829524 13.206007    7      2        2  1.5952808
+29 11.5414758 10.661183    8      1        2  1.5952808
+30 10.2182212 12.341647    8      2        2  1.5952808
+31 11.1802862 11.886727    8      1        2  1.5952808
+32 11.2009908 13.151989    8      2        2  1.5952808
+33 11.2701944 11.330613    9      1        2  0.3295078
+34 12.4295331 13.403849    9      2        2  0.3295078
+35 12.0926835 10.739987    9      1        2  0.3295078
+36 11.1649842 12.760839    9      2        2  0.3295078
+37 12.0761461 12.194329   10      1        2  0.3295078
+38 13.0264711 15.507595   10      2        2  0.3295078
+39 12.8861710 10.805941   10      1        2  0.3295078
+40 11.6407521 14.923454   10      2        2  0.3295078
+> 
+> #####################
+> ###Testing Between-unit effects
+> (res=flipMix(modelWithin=as.matrix(toyData[,c("Y1","Y2")])~Within,data=toyData, 
++       X=~XBetween,Z=~ZBetween,units=~subj,perms=1000,testType="permutation",statTest="t"))
+                                          Test   Stat tail p-value
+Y1:(Intercept)_|_XBetween  w-t  3.489   ><  0.0190
+Y1:Within_|_XBetween       w-t  0.110   ><  0.9200
+Y2:(Intercept)_|_XBetween  w-t 13.787   ><  0.0010
+Y2:Within_|_XBetween       w-t -1.986   ><  0.1020
+> #same as:
+> modelWithin <- lm(as.matrix(toyData[,c("Y1","Y2")])~Within,data=toyData)
+> (flipMix(modelWithin=modelWithin,data=toyData, X=~XBetween,Z=~ZBetween,units= ~subj, 
++         perms=1000,testType="permutation",statTest="t"))
+                                          Test   Stat tail p-value
+Y1:(Intercept)_|_XBetween  w-t  3.489   ><  0.0090
+Y1:Within_|_XBetween       w-t  0.110   ><  0.9250
+Y2:(Intercept)_|_XBetween  w-t 13.787   ><  0.0010
+Y2:Within_|_XBetween       w-t -1.986   ><  0.0930
+> 
+> ### Note that this is different from:
+> modelWithin <- list(Y1=lm(Y1~Within,data=toyData),Y2=lm(Y2~Within,data=toyData))
+> (flipMix(modelWithin=modelWithin,data=toyData, X=~XBetween,Z=~ZBetween,units= ~subj,
++         perms=1000,testType="permutation",statTest="t"))
+                                          Test    Stat tail p-value
+Y1.(Intercept)_|_XBetween  w-t  3.4853   ><  0.0100
+Y1.Within_|_XBetween       w-t  0.0082   ><  0.9930
+Y2.(Intercept)_|_XBetween  w-t 13.9697   ><  0.0010
+Y2.Within_|_XBetween       w-t -2.0509   ><  0.0580
+> 
+> ### combining results
+> (npc(res,"data.pc"))
+        comb.funct nVar  Stat p-value
+PC1    data.pc    4 7.015  0.0040
+> (npc(res,"data.trace"))
+        comb.funct nVar  Stat p-value
+F-trace data.trace    4 16.52  0.0010
+> ################################
+> ###Testing Within-unit effects
+> ## The resulting test is approximated. The estimate of the variance within units 
+> ## takes in account the presence of effects between units.
+> (flipMix(modelWithin=as.matrix(toyData[,c("Y1","Y2")])~Within,data=toyData, 
++         units= ~subj, perms=1000,testType="permutation",statTest="t"))
+               est.Su V2  Stat tail p-value
+Y1:(Intercept)  19.92  t 4.419   ><  0.0020
+Y1:Within       0.051  t 1.801   ><  0.1074
+Y2:(Intercept)  11.58  t 4.571   ><  0.0020
+Y2:Within      0.2669  t 5.902   ><  0.0020
+> 
+> ###The resulting tests are exact. If effects between are presents, 
+> ## statTest="Tnaive" or "TBTWest" are more suitable:
+> (res=flipMixWithin(modelWithin=as.matrix(toyData[,c("Y1","Y2")])~Within,data=toyData, 
++         units= ~subj, perms=1000,statTest=c("TH1est")))
+                     est.Su   Test  Stat tail p-value
+Y1:(Intercept)_H1est  19.47 TH1est 4.560   ><  0.0020
+Y1:Within_H1est        0.00 TH1est 1.372   ><  0.1055
+Y2:(Intercept)_H1est  10.69 TH1est 4.762   ><  0.0020
+Y2:Within_H1est        0.00 TH1est 8.472   ><  0.0020
+> npc(res)
+   comb.funct nVar  Stat p-value
+V1     Fisher    4 20.96  0.0020
+> 
+> 
+> 
+> cleanEx()
+> nameEx("multiplicity")
+> ### * multiplicity
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: npc
+> ### Title: Functions for multiplicity corrections
+> ### Aliases: npc flip.adjust flip.npc.methods
+> ### Keywords: htest
+> 
+> ### ** Examples
+> 
+> 
+> Y=data.frame(matrix(rnorm(50),10,5))
+> names(Y)=LETTERS[1:5]
+> Y[,1:2]=Y[,1:2]+1.5
+> res = flip(Y,perms=10000)
+> 
+> ########npc
+> p2=npc(res) # same as p2=npc(res,"Fisher")
+> summary(p2)
+ Call:
+ npc(permTP = res) 
+ permutations.
+   comb.funct nVar  Stat p-value sig.
+V1     Fisher    5 13.33  0.0020   **
+> p2=npc(res,"minP")
+> summary(p2)
+ Call:
+ npc(permTP = res, comb.funct = "minP") 
+ permutations.
+   comb.funct nVar Stat p-value sig.
+V1       minP    5  512  0.0098   **
+> p2=npc(res,"Fisher",subsets=list(c1=c("A","B"),c2=names(Y)))
+1 / 22 / 2
+> summary(p2)
+ Call:
+ npc(permTP = res, comb.funct = "Fisher", subsets = list(c1 = c("A",      "B"), c2 = names(Y))) 
+ permutations.
+   comb.funct nVar  Stat p-value sig.
+c1     Fisher    2 11.78  0.0020   **
+c2     Fisher    5 13.33  0.0020   **
+> p2=npc(res,"Fisher",subsets=list(c1=c("A","B"),c2=names(Y)),weights=1:5)
+1 / 22 / 2
+> summary(p2)
+ Call:
+ npc(permTP = res, comb.funct = "Fisher", subsets = list(c1 = c("A",      "B"), c2 = names(Y)), weights = 1:5) 
+ permutations.
+   comb.funct nVar  Stat p-value sig.
+c1     Fisher    2 17.33  0.0020   **
+c2     Fisher    5 23.87  0.1094     
+> 
+> 
+> 
+> res=flip.adjust(res,"maxT")
+> 
+> #res=flip.adjust(res,"BH")
+> ##same as 
+> #p.adjust(res,"BH")
+> 
+> ## now try
+> #getFlip(res,"Adjust")
+> 
+> 
+> 
+> cleanEx()
+> nameEx("permutationSpace")
+> ### * permutationSpace
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: permutationSpace
+> ### Title: These functions handle the orbit of permutation/rotation tests
+> ###   (i.e. permutation/rotation space).
+> ### Aliases: permutationSpace make.permSpace make.signSpace allpermutations
+> ###   npermutations t2p rom romFast
+> ### Keywords: manip
+> 
+> ### ** Examples
+> 
+> #10 random elements of the orbit of a one-sample test
+> make.signSpace(5, 10)
+$permID
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    1   -1   -1   -1
+[2,]    1   -1    1    1   -1
+[3,]   -1   -1    1   -1    1
+[4,]   -1   -1    1    1   -1
+
+$B
+[1] 10
+
+$seed
+[1] NA
+
+$n
+[1] 5
+
+$rotFunct
+function (i) 
+(permSpace$permID[i, ] * data$Y)
+<environment: 0x2660000>
+
+$type
+[1] "symmetry"
+
+> 
+> #All elements of the orbit of a one-sample test (the size of the space is 2^5 < 1000)
+> make.signSpace(5, 1000)
+$permID
+      [,1] [,2] [,3] [,4] [,5]
+ [1,]    1    1    1    1   -1
+ [2,]    1    1    1   -1    1
+ [3,]    1    1    1   -1   -1
+ [4,]    1    1   -1    1    1
+ [5,]    1    1   -1    1   -1
+ [6,]    1    1   -1   -1    1
+ [7,]    1    1   -1   -1   -1
+ [8,]    1   -1    1    1    1
+ [9,]    1   -1    1    1   -1
+[10,]    1   -1    1   -1    1
+[11,]    1   -1    1   -1   -1
+[12,]    1   -1   -1    1    1
+[13,]    1   -1   -1    1   -1
+[14,]    1   -1   -1   -1    1
+[15,]    1   -1   -1   -1   -1
+
+$B
+[1] 32
+
+$seed
+[1] NA
+
+$n
+[1] 5
+
+$rotFunct
+function (i) 
+(permSpace$permID[i, ] * data$Y)
+<environment: 0x1969e90>
+
+$type
+[1] "symmetry"
+
+> 
+> ## Not run: 
+> ##D #A random rotation matrix of size 3
+> ##D (r=rom(3))
+> ##D #verify that it is orthogonal:
+> ##D r##D 
+> ## End(Not run)
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  1.648 0.041 1.69 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

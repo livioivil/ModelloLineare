@@ -1,0 +1,15 @@
+flip                    The main function for univariate and
+                        multivariate testing under a permutation (and
+                        rotation) framework + some utilities.
+flip-package            The library is devoted to permutation-based
+                        inferential methods.
+flip.object-class       Class "flip.object" (and related functions) for
+                        storing the result of the function flip and
+                        flipMix
+flipMix                 The main function for testing mixed models
+                        under a permutation (and rotation) framework
+npc                     Functions for multiplicity corrections
+permutationSpace        These functions handle the orbit of
+                        permutation/rotation tests (i.e.
+                        permutation/rotation space).
+seeds                   Seeds data

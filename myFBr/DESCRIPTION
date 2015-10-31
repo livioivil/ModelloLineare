@@ -1,0 +1,11 @@
+Package: myFBr
+Type: Package
+Title: Read and visualizes the infos of your FaceBook profile
+Version: 0.1
+Date: 2015-10-31
+Author: Davide Meneghetti, Simone Righetto, Livio Finos
+Maintainer: davide.meneghetti@studenti.unipd.it
+Description: Read and visualizes the infos of your FaceBook profile
+License: GPL (>= 2)
+LazyLoad: yes
+RoxygenNote: 5.0.0
