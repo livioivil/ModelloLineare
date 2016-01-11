@@ -1,97 +1,86 @@
-##' Funzione che dato il percorso dei dati del profilo facebook ritorna il numero delle differenti attività che compaiono sul wall
-##' tra cui amicizie, stati, like, piace, condivisioni, link e giocato.
-##' Funzione valida anche per profili scritti in lingua inglese o spagnola.
+##' Funzione che dato il percorso dei dati del profilo facebook ritorna il numero delle differenti attivit? che compaiono sul wall
+##' tra cui amicizie, stati, like, piace, condivisioni, link e giocato dopo una certa data.
+##' Funzione NON valida per profili scritti in lingua inglese o spagnola, facile da aggiornare
 ##'
-##' @title conoscere il numero delle varie attività sul wall
+##' @title conoscere il numero delle varie attivit? sul wall
 ##' @param percorso stringa che indica il percorso della cartella dei dati del profilo
-##' @return dataset (1x7) contenente le informazioni delle attività sul Wall
+##' @param dataI data di Inizio (-Inf by default)
+##' @param dataF data di Fine (+Inf by default)
+##' @return dataset (1x7) contenente le informazioni delle attivit? sul Wall dopo la data di riferimento
+##' @export
+##' @title getWall
 ##' 
-##' @author Davide Meneghetti
+##' @author Davide Meneghetti, Livio Finos
 
 #funzione per leggere tutte le attivita' del wall
-getWall <- function(percorso){
+getWall <- function(percorso, dataI, dataF){
+  percorso=.fixPercorso(percorso)
   
-  #numero del Wall
+  cerca.testo=c(amicizia="hanno stretto amicizia",
+                stato="ha aggiornato il suo stato",
+                piace =  " piace ",
+                condiviso= "ha condiviso la foto",
+                linkAltri= "ha pubblicato un link sul tuo diario.",
+                linkTuo="ha condiviso un link.",
+                partecipato="ha partecipato a",
+                postInBacheca="scritto sul tuo diario",
+                aggiornImgProf="aggiornato la sua immagine del profilo",
+                nuovaFoto="aggiunto una nuova foto all\'album")
+
   perW=paste(percorso,"/html/wall.htm", sep="")
   #lettura intero file
-  pg=htmlParse(perW)
-  
+  pg=htmlParse(perW)  
   #lettura sezione file
   wall=getNodeSet(pg,"//div[@class='contents']/div/text()")
-  #wall
-  n=length(wall)
-  data=getNodeSet(pg,"//div[@class='contents']/div/div[@class='meta']/text()")
-  #data
-  n=length(data)
-  
-  getAtti <- function(i){
-    #attivita wall
-    atti=.estraielemento(wall[[i]])
-    #data dell'attivita
-    data=.estraielemento(data[[i]])
-    c(data=data,atti=atti)
-  }
-  
-  n=length(wall)
-  
-  #estrazione dati da lista
-  rr=t(sapply(1:n, getAtti))
-  
-  #creazione dataset
-  "datiWall" <- structure(.Data = list(rr[,"atti"],rr[,"data"]),
-                          names = c("attivita", "data"),
-                          row.names = c(1:n),
-                          class = "data.frame")
-  
-  cercaNStringhe <- function(stringa){
-    stati=rep(0,n)
-    for(i in 1:n){
-      k=grep(stringa, datiWall[i,"attivita"])
-      if(length(k) != 0L) stati[i]=k
-    }
-    length(stati[stati>0])
-  }
-  
-  #creazione dataset
-  "nWall" <- structure(.Data = list(cercaNStringhe("amicizia"),
-                                       cercaNStringhe("stato"),
-                                       cercaNStringhe("piace"),
-                                       cercaNStringhe("like"),
-                                       cercaNStringhe("condiviso"),
-                                       cercaNStringhe("link"),
-                                       cercaNStringhe("giocato")),
-                          names = c("amicizia", "stato","piace","like","condiviso","link","giocato"),
-                          row.names = c(1:1),
-                          class = "data.frame")
-  
-  if(nWall$amicizia==0){  #INGLESE
-    #creazione dataset
-   "nWall" <- structure(.Data = list(cercaNStringhe("friends"),
-                                      cercaNStringhe("stato"),
-                                      cercaNStringhe("likes"),
-                                      cercaNStringhe("like"),
-                                      cercaNStringhe("shared"),
-                                      cercaNStringhe("link"),
-                                      cercaNStringhe("played")),
-                         names = c("amicizia", "stato","piace","like","condiviso","link","giocato"),
+  if(length(wall)==0) {
+    "nWall" <- structure(.Data = as.list(rep(NA,length(cerca.testo)+1)),
+                         names = c(names(cerca.testo),"postTotali"),
                          row.names = c(1:1),
                          class = "data.frame")
-  }    
-  
-  if(nWall$amicizia==0){ #SPAGNOLO
-  #creazione dataset
-  "nWall" <- structure(.Data = list(cercaNStringhe("amigos"),
-                                    cercaNStringhe("estado"),
-                                    cercaNStringhe("piace"),
-                                    cercaNStringhe("like"),
-                                    cercaNStringhe("compartido"),
-                                    cercaNStringhe("link"),
-                                    cercaNStringhe("jugado")),
-                       names = c("amicizia", "stato","piace","like","condiviso","link","giocato"),
+    return(nWall)}
+  wall=sapply(wall,.estraielemento)
+  #wall
+#   n=length(wall)
+  data=getNodeSet(pg,"//div[@class='contents']/div/div[@class='meta']/text()")
+  #data
+  data=sapply(data,.estraielemento)
+  data=inDataIT(data)
+  keep=.which.within.date(data,dataI, dataF) 
+#   data=data[keep]
+  wall=wall[keep]
+  n=length(keep)
+
+#   sum(res)
+  res=sapply(cerca.testo, function(txt) length(grep(txt,wall)))
+  res=c(res,postTotali=n)
+#creazione dataset
+"nWall" <- structure(.Data = as.list(res),
+                       names = names(res) ,
                        row.names = c(1:1),
                        class = "data.frame")
-  }
   
+#   if(nWall$amicizia==0){  #INGLESE
+#     ans.type2=c("friends","stato","likes","like","shared","link","played","wall")
+#     
+#     res=sapply(ans.type2, function(txt) length(grep(txt,wall)))
+#     #creazione dataset
+#     "nWall" <- structure(.Data = as.list(res),
+#                          names = ans.type,
+#                          row.names = c(1:1),
+#                          class = "data.frame")
+#   }
+#   
+#   if(nWall$amicizia==0){ #SPAGNOLO
+#     ans.type2=c("amigos","estado","piace","like","compartido","link","jugado","diario")
+#     
+#     res=sapply(ans.type2, function(txt) length(grep(txt,wall)))
+#     #creazione dataset
+#     "nWall" <- structure(.Data = as.list(res),
+#                          names = ans.type,
+#                          row.names = c(1:1),
+#                          class = "data.frame")
+# 
+#   }
+#   
   return(nWall)  
-  
 }
