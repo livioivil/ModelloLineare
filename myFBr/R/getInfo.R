@@ -9,17 +9,20 @@
 ##' @author Davide Meneghetti, Livio Finos
 
 getInfo <- function(percorso){
-  percorso=.fixPercorso(percorso)
+  percorso=fixPath(percorso)
   perE=paste(percorso,"/index.htm", sep="")
   pg=htmlParse(perE)#lettura intero file
+  
   nome=getNodeSet(pg,"//tr[th[text()='Profilo']]/td/a/text()");
   nome=.estraielemento(nome[[1]])
   nome=gsub("http://www\\.facebook\\.com/","",nome)
   nome=gsub(" ","",nome)
+  nome =ifelse(nome=="NULL",NA,nome)
   nome =ifelse(is.null(nome),NA,nome)
   
-  email=getNodeSet(pg,"//tr[th[text()='Email']]/td/text()");
-  email = email[[1]]
+  email=getNodeSet(pg,"//tr[th[text()='E-mail']]/td/text()");
+  email = .estraielemento(email[[1]])
+  email=gsub(" $","",email)
   email=ifelse(is.null(email),NA,email)
   
   sesso=getNodeSet(pg,"//tr[th[text()='Sesso']]/td/text()");
@@ -28,11 +31,24 @@ getInfo <- function(percorso){
     sesso=getNodeSet(pg,"//tr[th[text()='Genere']]/td/text()");
     sesso = .cleanSex(sesso)
   }
-    
+  
+  
   dataReg=.getValore(pg,"//tr[th/text()='Data di registrazione']/td/text()")
   dataReg=inDataIT(dataReg)
   
   dataDown=.getDataDownload(pg)
+  
+  .getCittaNatale <- function(pg){
+    out=.getValore(pg,"//tr[th/text()='Città natale']/td/text()")
+    if(out=="NULL") out=NULL
+    out
+  }
+  .getSituazSentim <- function(pg){
+    out=.getValore(pg,"//tr[th/text()='Situazione sentimentale']/td/text()")
+    if(out=="NULL") out=NULL
+    out
+  }
+  
   
   data.frame(nome=nome,
              email=email,dataReg=dataReg,

@@ -13,8 +13,11 @@
 
 
 getMessages <- function(percorso,dataI=NULL,dataF=NULL){
+  percorso =fixPath(percorso)
   #lettura intero file
   perM=paste(percorso,"/html/messages.htm", sep="")
+  if(!("messages.htm"%in%dir(paste(percorso,"/html", sep=""))))
+    return(data.frame(time=NA,user=NA,text=NA)[-1,])
   pg=htmlParse(perM)
   #lettura nodi file
   #   getNodeSet(pg,"//p/text()")
@@ -23,7 +26,7 @@ getMessages <- function(percorso,dataI=NULL,dataF=NULL){
   meta=getNodeSet(pg,"//div/span[@class='meta']/text()")
   meta=.estraielementi(meta)
   meta=inDataIT(meta)
-  id.select=.which.within.date.null(messaggi$time,dataI, dataF)
+  id.select=.which.within.date.null(meta,dataI, dataF)
   if(!is.null(id.select)) meta=meta[id.select]
   
   user=getNodeSet(pg,"//div/span[@class='user']/text()")
@@ -52,12 +55,13 @@ getMessages <- function(percorso,dataI=NULL,dataF=NULL){
 getNMessages <- function(percorso,dataI=NULL,dataF=NULL){
   percorso=.fixPercorso(percorso)
   perM=paste(percorso,"/html/messages.htm", sep="")
+  if(!("messages.htm"%in%dir(paste(percorso,"/html", sep=""))))
+    return(NA)
   #lettura intero file
   pg=htmlParse(perM)
   #lettura nodi file
   meta=getNodeSet(pg,"//div/span[@class='meta']/text()")
-  
-  
+    
   meta=.estraielementi(meta)
   
   nmess=length(.which.within.date(inDataIT(meta),dataI, dataF))

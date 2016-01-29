@@ -1,0 +1,9 @@
+Package: SigmaPsi
+Version: 0.1
+Date: 2015-11-11
+Title: R package for Psychometry
+Author: Livio Finos, Gianmarco Altoe', Massimiliano Pastore
+Maintainer: livio finos <livio.finos@unipd.it>
+Description: R package for Psychometry
+License: GPL (>= 2)
+RoxygenNote: 5.0.0
